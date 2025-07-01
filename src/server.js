@@ -1,34 +1,19 @@
-require('dotenv').config();
-const express = require('express'); //commonjs
-const configViewEngine = require('./config/viewEngine');
-const apiRoutes = require('./routes/api');
-const connection = require('./config/database');
-const { getHomepage } = require('./controllers/homeController');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const db = require("./config/db");
+const route = require("./routes/index.route");
+
+db.connectDB();
 
 const app = express();
-const port = process.env.PORT || 8888;
+app.use(cors());
+app.use(express.json());
 
-//config req.body
-app.use(express.json()) // for json
-app.use(express.urlencoded({ extended: true })) // for form data
+// Khởi tạo route
+route(app);
 
-//config template engine
-configViewEngine(app);
-
-//khai báo route
-app.use('/v1/api/', apiRoutes);
-app.use('/', getHomepage);
-
-
-(async () => {
-    try {
-        //using mongoose
-        // await connection();
-
-        app.listen(port, () => {
-            console.log(`Backend Nodejs App listening on port ${port}`)
-        })
-    } catch (error) {
-        console.log(">>> Error connect to DB: ", error)
-    }
-})()
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});

@@ -12,18 +12,25 @@
     "nodejs",
     "react"
   ],
-  "author": {
-    "name": "Hỏi Dân IT",
-    "url": "https://hoidanit.vn"
-  },
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "dotenv": "16.4.5",
     "ejs": "3.1.10",
-    "express": "4.19.2",
-    "mongoose": "8.4.4"
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.4"
   },
   "devDependencies": {
     "nodemon": "3.1.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/public-starter-projects1/00-youtube-hoidanit/00-fullstack/00-react-nodejs-jwt/01-nodejs-javascript.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/public-starter-projects1/00-youtube-hoidanit/00-fullstack/00-react-nodejs-jwt/01-nodejs-javascript/issues"
+  },
+  "homepage": "https://gitlab.com/public-starter-projects1/00-youtube-hoidanit/00-fullstack/00-react-nodejs-jwt/01-nodejs-javascript#readme"
 }

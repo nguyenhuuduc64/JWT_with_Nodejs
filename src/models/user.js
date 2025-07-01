@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
-    role: String,
+const userSchema = new Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
 });
 
-const User = mongoose.model('user', userSchema);
-
-module.exports = User;
+// ✅ Kiểm tra nếu model đã tồn tại thì dùng lại, không định nghĩa lại
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);
