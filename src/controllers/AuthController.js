@@ -1,7 +1,10 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(
+  "1080788604306-0hieg9rt038dscm1m3ig4fmcbels91em.apps.googleusercontent.com"
+);
 
 class AuthController {
   async create(req, res) {
@@ -21,10 +24,11 @@ class AuthController {
       console.error("Lỗi tạo tài khoản:", err.message);
       res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
     }
-      
   }
   async login(req, res) {
     const { username, password } = req.body;
+    console.log("Yêu cầu login:", req.body);
+
     try {
       const user = await User.findOne({ username });
       if (!user) {
@@ -40,14 +44,48 @@ class AuthController {
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      res.json ({token})
+      res.json({ token });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error", error: err.message });
-
     }
   }
 
+  async googleLogin(req, res) {
+    try {
+      const { token } = req.body;
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience:
+          "1080788604306-0hieg9rt038dscm1m3ig4fmcbels91em.apps.googleusercontent.com",
+      });
+      const payload = ticket.getPayload();
+      console.log("Payload từ Google:", payload);
+      const { email, name } = payload;
+      console.log("Xác thực token:", token);
+
+      let user = await User.findOne({ email });
+
+      if (!user) {
+        user = new User({
+          username: name,
+          email,
+          password: "", // Vì dùng Google nên không cần password
+          isGoogleAccount: true,
+        });
+        await user.save();
+      }
+
+      const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      res.json({ token: jwtToken, user });
+    } catch (err) {
+      console.error("Lỗi xác thực Google:", err);
+      res.status(401).json({ message: "Xác thực Google thất bại" });
+    }
+  }
 }
 
 module.exports = new AuthController();
