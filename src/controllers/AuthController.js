@@ -16,6 +16,8 @@ class AuthController {
         username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
+        role: req.body.role || "student", // Mặc định là student nếu không có role
+        fullname: req.body.fullname || "", // Mặc định là chuỗi rỗng
       });
 
       await newUser.save();
@@ -52,6 +54,9 @@ class AuthController {
   }
 
   async googleLogin(req, res) {
+    console.log("Yêu cầu xác thực Google:", req.body);
+    console.log("User model:", User); // In ra để xem có phải là function hay object rỗng
+
     try {
       const { token } = req.body;
       const ticket = await client.verifyIdToken({
@@ -59,6 +64,7 @@ class AuthController {
         audience:
           "1080788604306-0hieg9rt038dscm1m3ig4fmcbels91em.apps.googleusercontent.com",
       });
+      console.log("sticket từ Google:", ticket);
       const payload = ticket.getPayload();
       console.log("Payload từ Google:", payload);
       const { email, name } = payload;
@@ -71,7 +77,8 @@ class AuthController {
           username: name,
           email,
           password: "", // Vì dùng Google nên không cần password
-          isGoogleAccount: true,
+          role: "student", // Mặc định là student
+          fullname: name, // Lấy tên từ Google
         });
         await user.save();
       }
@@ -82,8 +89,24 @@ class AuthController {
 
       res.json({ token: jwtToken, user });
     } catch (err) {
-      console.error("Lỗi xác thực Google:", err);
-      res.status(401).json({ message: "Xác thực Google thất bại" });
+      console.error("Lỗi xác thực Google:", err.message);
+      console.error(err); // full stack trace
+      res
+        .status(401)
+        .json({ message: "Xác thực Google thất bại", error: err.message });
+    }
+  }
+
+  async getCurrentUser(req, res) {
+    try {
+      const user = await User.findById(req.user.userId).select("-password");
+      if (!user) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
+      }
+      res.json(user);
+    } catch (err) {
+      console.error("Lỗi lấy thông tin người dùng:", err.message);
+      res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
     }
   }
 }

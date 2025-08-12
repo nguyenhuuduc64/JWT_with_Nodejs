@@ -8,6 +8,7 @@ const route = require("./routes/index.route");
 db.connectDB();
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
