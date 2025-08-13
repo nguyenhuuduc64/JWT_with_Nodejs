@@ -9,10 +9,13 @@ const courseSchema = new Schema({
   subject: { type: String },
   teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   coverImage: { type: String, default: "" },
+  deleted: { type: Boolean, default: false }, // Thêm dòng này
+  deletedAt: { type: Date }, // Thêm dòng này
 });
 
 courseSchema.plugin(mongoose_delete, {
   deletedAt: true,
+  deletedBy: true,
   overrideMethods: "all",
 });
 module.exports =

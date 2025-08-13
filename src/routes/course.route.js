@@ -6,4 +6,5 @@ const authMiddleware = require("../middleware/authMiddleware");
 courseRouter.post("/create", CourseController.create);
 courseRouter.get("/user/:userId", CourseController.getCoursesByUser);
 courseRouter.delete("/delete/:courseId", CourseController.deleteCourse);
+courseRouter.put("/update/:courseId", CourseController.updateCourse);
 module.exports = courseRouter;

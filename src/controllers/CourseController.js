@@ -12,7 +12,7 @@ class CourseController {
         teacherId: req.body.teacherId, // ID của người dạy
         coverImage:
           req.body.coverImage ||
-          "https://phunuso.mediacdn.vn/thumb_w/640/603486343963435008/2024/12/19/2wgyow3f-1734595452045-1734595452201602570299.jpg", // Mặc định là chuỗi rỗng
+          "https://tutorhelpme.co.uk/wp-content/uploads/2024/08/What-is-function-in-maths.jpg", // Mặc định là chuỗi rỗng
       });
       console.log(newCourse);
       await newCourse.save();
@@ -53,6 +53,23 @@ class CourseController {
       res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
     }
   }
+
+  updateCourse = async (req, res) => {
+    const { courseId } = req.params;
+    const updateData = req.body;
+
+    try {
+      const updatedCourse = await Course.findByIdAndUpdate(
+        courseId,
+        updateData
+      );
+    } catch (err) {
+      console.error("Lỗi cập nhật khóa học:", err.message);
+      return res
+        .status(500)
+        .json({ message: "Lỗi máy chủ", error: err.message });
+    }
+  };
 }
 
 module.exports = new CourseController();
