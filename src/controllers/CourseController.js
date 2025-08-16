@@ -1,5 +1,6 @@
 const Course = require("../models/Course");
 const mongoose = require("mongoose");
+const Lession = require("../models/Lession");
 
 class CourseController {
   async create(req, res) {
@@ -69,6 +70,38 @@ class CourseController {
         .status(500)
         .json({ message: "Lỗi máy chủ", error: err.message });
     }
+  };
+
+  async getAllLessions(req, res) {
+    try {
+      const { courseId } = req.params;
+      console.log("Yêu cầu lấy tất cả bài học của khóa học:", courseId);
+      const lessons = await Lession.find({ courseId: courseId });
+      res.status(200).json(lessons);
+    } catch (error) {
+      console.error("Lỗi lấy bài học:", error.message);
+      return res
+        .status(500)
+        .json({ message: "Lỗi máy chủ", error: error.message });
+    }
+  }
+  addLession = (req, res) => {
+    console.log("Yêu cầu thêm bài học:", req.body);
+    const { courseId } = req.params;
+    const { title } = req.body;
+    const newLession = new Lession({
+      title: title,
+      courseId: courseId,
+    });
+    newLession
+      .save()
+      .then(() => {
+        res.status(201).json({ message: "Thêm bài học thành công" });
+      })
+      .catch((err) => {
+        console.error("Lỗi thêm bài học:", err.message);
+        res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
+      });
   };
 }
 
