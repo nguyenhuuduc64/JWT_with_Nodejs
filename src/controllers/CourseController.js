@@ -3,6 +3,24 @@ const mongoose = require("mongoose");
 const Lession = require("../models/Lession");
 
 class CourseController {
+  async getCourse(req, res) {
+    try {
+      const { courseId } = req.params;
+      console.log("Yêu cầu lấy thông tin khóa học:", courseId);
+
+      const course = await Course.findById(courseId);
+
+      if (!course) {
+        return res.status(404).json({ message: "Không tìm thấy khóa học" });
+      }
+
+      res.json(course);
+    } catch (err) {
+      console.error("Lỗi lấy khóa học:", err.message);
+      res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
+    }
+  }
+
   async create(req, res) {
     try {
       const newCourse = new Course({

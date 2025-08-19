@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const Course = require("../models/Course");
 class meController {
   getUserFollow = async (req, res) => {
     const courseId = req.params.courseId;
