@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const lessionSchema = new Schema({
   title: { type: String, required: true },
   courseId: { type: String, required: true },
+  fileUrl: { type: String },
 });
 
 module.exports =
-  mongoose.models.Lession || mongoose.model("Lession", lessionSchema);
+  mongoose.models.Lesson || mongoose.model("Lesson", lessionSchema);

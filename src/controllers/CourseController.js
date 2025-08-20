@@ -1,6 +1,6 @@
 const Course = require("../models/Course");
 const mongoose = require("mongoose");
-const Lession = require("../models/Lession");
+const Lession = require("../models/Lesson");
 
 class CourseController {
   async getCourse(req, res) {
@@ -103,24 +103,6 @@ class CourseController {
         .json({ message: "Lỗi máy chủ", error: error.message });
     }
   }
-  addLession = (req, res) => {
-    console.log("Yêu cầu thêm bài học:", req.body);
-    const { courseId } = req.params;
-    const { title } = req.body;
-    const newLession = new Lession({
-      title: title,
-      courseId: courseId,
-    });
-    newLession
-      .save()
-      .then(() => {
-        res.status(201).json({ message: "Thêm bài học thành công" });
-      })
-      .catch((err) => {
-        console.error("Lỗi thêm bài học:", err.message);
-        res.status(500).json({ message: "Lỗi máy chủ", error: err.message });
-      });
-  };
 }
 
 module.exports = new CourseController();

@@ -13,5 +13,5 @@ courseRouter.delete("/delete/:courseId", CourseController.deleteCourse);
 courseRouter.put("/update/:courseId", CourseController.updateCourse);
 courseRouter.get("/:courseId/lessons", CourseController.getAllLessions);
 courseRouter.get("/:courseId", CourseController.getCourse);
-courseRouter.post("/:courseId", CourseController.addLession);
+
 module.exports = courseRouter;
