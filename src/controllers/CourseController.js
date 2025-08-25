@@ -6,7 +6,6 @@ class CourseController {
   async getCourse(req, res) {
     try {
       const { courseId } = req.params;
-      console.log("Yêu cầu lấy thông tin khóa học:", courseId);
 
       const course = await Course.findById(courseId);
 
@@ -33,7 +32,6 @@ class CourseController {
           req.body.coverImage ||
           "https://tutorhelpme.co.uk/wp-content/uploads/2024/08/What-is-function-in-maths.jpg", // Mặc định là chuỗi rỗng
       });
-      console.log(newCourse);
       await newCourse.save();
       res.status(201).json({ message: "tao khoa hoc thanh cong" });
     } catch (err) {
@@ -54,7 +52,6 @@ class CourseController {
 
   async deleteCourse(req, res) {
     const { courseId } = req.params;
-    console.log("Yêu cầu xóa khóa học:", courseId);
     try {
       // Xoá mềm và lấy kết quả
       const deletedCourse = await Course.delete({ _id: courseId });
@@ -93,7 +90,6 @@ class CourseController {
   async getAllLessions(req, res) {
     try {
       const { courseId } = req.params;
-      console.log("Yêu cầu lấy tất cả bài học của khóa học:", courseId);
       const lessons = await Lession.find({ courseId: courseId });
       res.status(200).json(lessons);
     } catch (error) {

@@ -29,7 +29,6 @@ class AuthController {
   }
   async login(req, res) {
     const { username, password } = req.body;
-    console.log("Yêu cầu login:", req.body);
 
     try {
       const user = await User.findOne({ username });
@@ -54,9 +53,6 @@ class AuthController {
   }
 
   async googleLogin(req, res) {
-    console.log("Yêu cầu xác thực Google:", req.body);
-    console.log("User model:", User); // In ra để xem có phải là function hay object rỗng
-
     try {
       const { token } = req.body;
       const ticket = await client.verifyIdToken({
@@ -64,11 +60,8 @@ class AuthController {
         audience:
           "1080788604306-0hieg9rt038dscm1m3ig4fmcbels91em.apps.googleusercontent.com",
       });
-      console.log("sticket từ Google:", ticket);
       const payload = ticket.getPayload();
-      console.log("Payload từ Google:", payload);
       const { email, name } = payload;
-      console.log("Xác thực token:", token);
 
       let user = await User.findOne({ email });
 

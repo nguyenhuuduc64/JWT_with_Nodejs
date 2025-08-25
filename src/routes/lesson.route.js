@@ -7,5 +7,6 @@ lessonRouter.post(
   upload.single("file"), // nhận 1 file field "file"
   LessonController.addLesson
 );
-
+lessonRouter.put("/:id", LessonController.updateLesson);
+lessonRouter.delete("/:id", LessonController.deleteLesson);
 module.exports = lessonRouter;

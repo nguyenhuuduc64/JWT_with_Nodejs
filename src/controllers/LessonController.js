@@ -1,17 +1,13 @@
 const User = require("../models/User");
 const Course = require("../models/Course");
 const Lesson = require("../models/Lesson");
+const { deleteFile } = require("../services/storageService");
 class LessonController {
   async addLesson(req, res) {
-    console.log("yeu cau them khoa hoc");
-    console.log("Request body:", req.body); // Kiểm tra dữ liệu text
-    console.log("Request file:", req.file); // <<< THÊM DÒNG NÀY để kiểm tra file
-
     try {
-      const { title, fileUrl } = req.body;
-      console.log("body request", req.body);
+      const { title, fileUrl, fileName } = req.body;
       const { courseId } = req.params;
-      const file = req.file; // từ multer
+      const file = req.file;
 
       console.log("File object from Multer:", file); // <<< VÀ DÒNG NÀY
 
@@ -19,16 +15,11 @@ class LessonController {
         try {
           const fileName = `lessons/${Date.now()}-${file.originalname}`;
 
-          // Kiểm tra xem file.buffer có tồn tại không, nếu không thì sử dụng fs
           let fileData = file.buffer;
-          // Nếu dùng diskStorage, file sẽ nằm trong file.path
-          // const fileData = fs.readFileSync(file.path); // Nhớ require('fs')
 
-          // Upload file lên Supabase Storage
           const { data, error: uploadError } = await supabase.storage
             .from("documents")
             .upload(fileName, fileData, {
-              // Dùng fileData thay vì file.buffer
               contentType: file.mimetype,
               upsert: true,
             });
@@ -37,8 +28,6 @@ class LessonController {
             console.error("Lỗi upload Supabase:", uploadError);
             throw uploadError;
           }
-
-          // Lấy public URL
           const { data: publicUrlData, error: urlError } = supabase.storage
             .from("documents")
             .getPublicUrl(fileName);
@@ -50,21 +39,45 @@ class LessonController {
 
           console.log("Upload thành công. URL:", fileUrl);
         } catch (err) {
-          // Chỉ log lỗi và tiếp tục, không throw để lesson vẫn được tạo (nếu muốn)
           console.error("Lỗi trong quá trình xử lý file:", err.message);
-          // Bạn có thể quyết định có nên throw lỗi không hay để fileUrl là null
-          // throw err; // Nếu muốn dừng hoàn toàn
         }
       }
 
-      // Lưu vào MongoDB
-      const lesson = new Lesson({ title, courseId, fileUrl });
+      const lesson = new Lesson({
+        title,
+        courseId,
+        fileUrl,
+        fileName: `files/${fileName}`,
+      });
       await lesson.save();
 
       res.json({ message: "Tạo lesson thành công", lesson });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
+  }
+
+  async updateLesson(req, res) {
+    const courseIdObj = await Lesson.findById(req.params.id).select("courseId");
+    const courseId = courseIdObj.courseId;
+    const newLesson = await Lesson.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+        courseId: courseId,
+      },
+      { new: true, runValidators: true }
+    );
+    res.json(newLesson);
+  }
+
+  async deleteLesson(req, res) {
+    console.log("Đã vào hàm deleteLesson");
+    const lessonId = req.params.id;
+    const deleteLesson = await Lesson.findById(lessonId);
+    await deleteFile("documents", deleteLesson.fileName);
+    await Lesson.findByIdAndDelete(lessonId);
+    res.json({ message: "Xóa lesson thành công" });
   }
 }
 

@@ -5,6 +5,7 @@ const lessionSchema = new Schema({
   title: { type: String, required: true },
   courseId: { type: String, required: true },
   fileUrl: { type: String },
+  fileName: { type: String },
 });
 
 module.exports =
