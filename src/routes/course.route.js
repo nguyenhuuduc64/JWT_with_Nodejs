@@ -9,8 +9,10 @@ courseRouter.get(
   authMiddleware,
   CourseController.getCoursesByUser
 );
+
 courseRouter.delete("/delete/:courseId", CourseController.deleteCourse);
 courseRouter.put("/update/:courseId", CourseController.updateCourse);
+courseRouter.get("/search", CourseController.searchCourses);
 courseRouter.get("/:courseId/lessons", CourseController.getAllLessions);
 courseRouter.get("/:courseId", CourseController.getCourse);
 

@@ -10,7 +10,8 @@ const courseSchema = new Schema({
   teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   coverImage: { type: String, default: "" },
   deleted: { type: Boolean, default: false }, // Thêm dòng này
-  deletedAt: { type: Date }, // Thêm dòng này
+  deletedAt: { type: Date },
+  userFollow: [{ type: mongoose.Schema.Types.ObjectId, ref: "", default: [] }],
 });
 
 courseSchema.plugin(mongoose_delete, {

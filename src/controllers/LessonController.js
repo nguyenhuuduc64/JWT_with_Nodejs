@@ -48,6 +48,7 @@ class LessonController {
         courseId,
         fileUrl,
         fileName: `files/${fileName}`,
+        type: "pdf",
       });
       await lesson.save();
 

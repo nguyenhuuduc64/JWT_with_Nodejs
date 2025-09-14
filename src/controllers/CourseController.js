@@ -1,6 +1,7 @@
 const Course = require("../models/Course");
 const mongoose = require("mongoose");
 const Lession = require("../models/Lesson");
+const User = require("../models/User");
 
 class CourseController {
   async getCourse(req, res) {
@@ -99,6 +100,19 @@ class CourseController {
         .json({ message: "Lỗi máy chủ", error: error.message });
     }
   }
-}
+
+  searchCourses = async (req, res) => {
+    try {
+      const keyword = req.query.query || ""; // fallback nếu không truyền query
+      const courses = await Course.find({
+        title: { $regex: keyword, $options: "i" },
+      });
+      res.json(courses);
+    } catch (error) {
+      console.error("Error searching courses:", error);
+      res.status(500).json({ message: "Lỗi server khi tìm kiếm khóa học" });
+    }
+  };
+  }
 
 module.exports = new CourseController();
