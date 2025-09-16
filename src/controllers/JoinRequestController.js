@@ -5,7 +5,7 @@ class JoinRequestController {
   async getJoinRequests(req, res) {
     const teacherId = req.user.userId;
     const course = await Course.findOne({ teacherId });
-    const response = await JoinRequest.find()
+    const response = await JoinRequest.find({ status: "pending" })
       .populate("student")
       .populate("course");
     res.status(200).json(response);
